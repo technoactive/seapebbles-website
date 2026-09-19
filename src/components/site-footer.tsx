@@ -52,7 +52,7 @@ export function SiteFooter() {
 
         <div>
           <h2 className="font-display mb-4 text-lg text-white">Find us</h2>
-          <address className="space-y-3 text-sm not-italic">
+          <address className="space-y-1 text-sm not-italic">
             <p className="flex gap-3">
               <PinIcon className="mt-0.5 h-4 w-4 shrink-0" />
               <span>
@@ -63,15 +63,15 @@ export function SiteFooter() {
                 {business.address.region}, {business.address.postcode}
               </span>
             </p>
-            <p className="flex gap-3">
-              <PhoneIcon className="mt-0.5 h-4 w-4 shrink-0" />
-              <a href={`tel:${business.phoneIntl}`} className="hover:text-white">
+            <p className="flex items-center gap-3">
+              <PhoneIcon className="h-4 w-4 shrink-0" />
+              <a href={`tel:${business.phoneIntl}`} className="inline-flex min-h-10 items-center hover:text-white">
                 {business.phone}
               </a>
             </p>
-            <p className="flex gap-3">
-              <MailIcon className="mt-0.5 h-4 w-4 shrink-0" />
-              <a href={`mailto:${business.email}`} className="hover:text-white">
+            <p className="flex items-center gap-3">
+              <MailIcon className="h-4 w-4 shrink-0" />
+              <a href={`mailto:${business.email}`} className="inline-flex min-h-10 items-center hover:text-white">
                 {business.email}
               </a>
             </p>
@@ -80,7 +80,7 @@ export function SiteFooter() {
             href={business.googleMapsUrl}
             target="_blank"
             rel="noopener"
-            className="mt-4 inline-block text-sm font-semibold text-sea-300 hover:text-white"
+            className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-sea-300 hover:text-white"
           >
             Directions on Google Maps
           </a>
@@ -88,26 +88,26 @@ export function SiteFooter() {
 
         <div>
           <h2 className="font-display mb-4 text-lg text-white">Explore</h2>
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+          <ul className="grid grid-cols-2 gap-x-4 text-sm">
             {navigation.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="hover:text-white">
+                <Link href={item.href} className="inline-flex min-h-10 items-center hover:text-white">
                   {item.label}
                 </Link>
               </li>
             ))}
             <li>
-              <Link href="/reserve" className="hover:text-white">
+              <Link href="/reserve" className="inline-flex min-h-10 items-center hover:text-white">
                 Reservations
               </Link>
             </li>
             <li>
-              <Link href="/menu/lunch-deal" className="hover:text-white">
+              <Link href="/menu/lunch-deal" className="inline-flex min-h-10 items-center hover:text-white">
                 Lunch Deal
               </Link>
             </li>
             <li>
-              <Link href="/privacy-policy" className="hover:text-white">
+              <Link href="/privacy-policy" className="inline-flex min-h-10 items-center hover:text-white">
                 Privacy
               </Link>
             </li>

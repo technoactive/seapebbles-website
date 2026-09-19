@@ -66,11 +66,11 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="mt-8 flex flex-col gap-2 text-sm text-white/75 sm:flex-row sm:items-center sm:gap-6">
-              <a href={business.googleMapsUrl} target="_blank" rel="noopener" className="inline-flex items-center gap-2 hover:text-white">
+              <a href={business.googleMapsUrl} target="_blank" rel="noopener" className="inline-flex min-h-11 items-center gap-2 hover:text-white">
                 <PinIcon className="h-4 w-4" />
                 {business.address.street}, {business.address.locality}, {business.address.postcode}
               </a>
-              <a href={`tel:${business.phoneIntl}`} className="inline-flex items-center gap-2 hover:text-white">
+              <a href={`tel:${business.phoneIntl}`} className="inline-flex min-h-11 items-center gap-2 hover:text-white">
                 <PhoneIcon className="h-4 w-4" />
                 {business.phone}
               </a>
@@ -147,7 +147,7 @@ export default function HomePage() {
               often from customers is simpler: it tastes the way it did when they came here as kids.
             </p>
           </div>
-          <Link href="/about" className="mt-8 inline-flex items-center gap-2 font-semibold text-sea-700 hover:text-sea-900">
+          <Link href="/about" className="link-arrow mt-6 text-base">
             More about Sea Pebbles <ArrowRightIcon className="h-4 w-4" />
           </Link>
         </div>
@@ -226,7 +226,7 @@ export default function HomePage() {
               Table service, a licensed bar and high chairs for the little ones. Booking is a good idea
               on Friday and Saturday evenings.
             </p>
-            <Link href="/reserve" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-sea-700 hover:text-sea-900">
+            <Link href="/reserve" className="link-arrow mt-3">
               Reserve a table <ArrowRightIcon className="h-4 w-4" />
             </Link>
           </div>
@@ -240,7 +240,7 @@ export default function HomePage() {
               href={business.ordering.direct}
               target="_blank"
               rel="noopener"
-              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-sea-700 hover:text-sea-900"
+              className="link-arrow mt-3"
             >
               Order for collection <ExternalIcon className="h-4 w-4" />
             </a>
@@ -251,11 +251,11 @@ export default function HomePage() {
               We are on Uber Eats and Deliveroo across Hatch End, Pinner, Harrow and the surrounding
               postcodes.
             </p>
-            <div className="mt-5 flex flex-wrap gap-4 text-sm font-semibold">
-              <a href={business.ordering.uberEats} target="_blank" rel="noopener" className="inline-flex items-center gap-1.5 text-sea-700 hover:text-sea-900">
+            <div className="mt-3 flex flex-wrap gap-x-5">
+              <a href={business.ordering.uberEats} target="_blank" rel="noopener" className="link-arrow">
                 Uber Eats <ExternalIcon className="h-4 w-4" />
               </a>
-              <a href={business.ordering.deliveroo} target="_blank" rel="noopener" className="inline-flex items-center gap-1.5 text-sea-700 hover:text-sea-900">
+              <a href={business.ordering.deliveroo} target="_blank" rel="noopener" className="link-arrow">
                 Deliveroo <ExternalIcon className="h-4 w-4" />
               </a>
             </div>

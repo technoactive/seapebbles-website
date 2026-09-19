@@ -4,9 +4,40 @@
  * so a change to the phone number or hours only has to be made once.
  */
 
-export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://seapebbles.co.uk"
-).replace(/\/$/, "");
+const PRODUCTION_URL = "https://seapebbles.co.uk";
+
+/**
+ * Canonical origin for absolute URLs (metadata, sitemap, JSON-LD, llms.txt).
+ *
+ * Resolution order:
+ * 1. NEXT_PUBLIC_SITE_URL, when set to a non-empty, valid absolute URL
+ * 2. Vercel's production domain for the project (previews canonicalise to it)
+ * 3. The hard-coded production domain
+ *
+ * Hosting dashboards sometimes define a variable with an empty value, and
+ * `new URL("")` throws at build time, so blanks are treated as unset.
+ */
+function resolveSiteUrl(): string {
+  const candidates = [
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.VERCEL_PROJECT_PRODUCTION_URL &&
+      `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`,
+    PRODUCTION_URL,
+  ];
+
+  for (const candidate of candidates) {
+    const value = candidate?.trim();
+    if (!value) continue;
+    try {
+      return new URL(value).origin;
+    } catch {
+      // Malformed value; fall through to the next candidate.
+    }
+  }
+  return PRODUCTION_URL;
+}
+
+export const SITE_URL = resolveSiteUrl();
 
 export const business = {
   name: "Sea Pebbles",

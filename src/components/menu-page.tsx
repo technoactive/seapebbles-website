@@ -53,7 +53,7 @@ export function MenuPage({
         </div>
       </PageHero>
 
-      <div className="container-site -mt-6 mb-10">
+      <div className="container-site relative z-10 -mt-6 mb-10">
         <MenuTabs active={menu.slug} />
       </div>
 

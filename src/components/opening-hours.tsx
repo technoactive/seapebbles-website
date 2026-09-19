@@ -35,16 +35,24 @@ export function OpeningHours({
     );
   }
 
+  // Phones: day above its times. From `sm` up: day left, times right-aligned.
   return (
-    <dl className={`grid grid-cols-[auto_1fr] gap-x-6 gap-y-3 ${className}`}>
+    <dl
+      className={`grid grid-cols-1 gap-y-3.5 sm:grid-cols-[auto_1fr] sm:gap-x-6 sm:gap-y-3 ${className}`}
+    >
       {openingHoursSummary.map((row) => (
-        <div key={row.days} className="contents">
-          <dt className="font-semibold text-sea-900">{row.days}</dt>
-          <dd className="text-right tabular-nums">
-            {row.times.map((t) => (
-              <div key={t} className="whitespace-nowrap">
+        <div key={row.days} className="sm:contents">
+          <dt className="font-semibold text-sea-900 sm:whitespace-nowrap">{row.days}</dt>
+          <dd className="mt-0.5 tabular-nums sm:mt-0 sm:text-right">
+            {row.times.map((t, i) => (
+              <span key={t} className="whitespace-nowrap sm:block">
+                {i > 0 && (
+                  <span className="mx-1.5 text-pebble-400 sm:hidden" aria-hidden>
+                    ·
+                  </span>
+                )}
                 {t}
-              </div>
+              </span>
             ))}
           </dd>
         </div>

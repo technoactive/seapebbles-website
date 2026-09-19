@@ -116,6 +116,11 @@
     @apply btn text-white ring-1 ring-white/50 hover:bg-white/10;
   }
 
+  /* Standalone text link with a 44px tap target */
+  .link-arrow {
+    @apply inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-sea-700 hover:text-sea-900;
+  }
+
   .card {
     @apply rounded-2xl bg-white shadow-soft ring-1 ring-sea-900/5;
   }
