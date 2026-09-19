@@ -1,26 +1,166 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Brand palette, taken from the Sea Pebbles logo and the restaurant interior */
+  --color-sea-50: #eef8fd;
+  --color-sea-100: #d6eefa;
+  --color-sea-200: #b0dcf4;
+  --color-sea-300: #7cc4ea;
+  --color-sea-400: #3ea6dc;
+  --color-sea-500: #1a9ad6;
+  --color-sea-600: #0f7cb4;
+  --color-sea-700: #0d6392;
+  --color-sea-800: #0f5378;
+  --color-sea-900: #0b2540;
+  --color-sea-950: #071a2e;
+
+  --color-sand-50: #fcfaf5;
+  --color-sand-100: #f6f1e7;
+  --color-sand-200: #ece3d1;
+  --color-sand-300: #dfd0b5;
+
+  --color-pebble-100: #f2f2f0;
+  --color-pebble-200: #e2e3e0;
+  --color-pebble-400: #9a9c98;
+  --color-pebble-600: #5e615d;
+  --color-pebble-800: #2e302e;
+
+  --color-batter-400: #e8b85a;
+  --color-batter-500: #d9a441;
+  --color-batter-600: #b8862b;
+
+  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --shadow-soft: 0 1px 2px rgb(11 37 64 / 0.06), 0 8px 24px -12px rgb(11 37 64 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(11 37 64 / 0.08), 0 16px 40px -16px rgb(11 37 64 / 0.28);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    @apply bg-sand-50 text-pebble-800 font-sans antialiased;
+    font-feature-settings: "kern", "liga", "calt";
+  }
+
+  ::selection {
+    background: var(--color-sea-200);
+    color: var(--color-sea-900);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-sea-500);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-sea-900;
+    text-wrap: balance;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility btn {
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold whitespace-nowrap transition-[background-color,color,box-shadow,transform] duration-200 will-change-transform;
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+@layer components {
+  .container-site {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+
+  .eyebrow {
+    @apply text-sea-600 text-xs font-semibold tracking-[0.18em] uppercase;
+  }
+
+  .btn-primary {
+    @apply btn bg-sea-600 text-white shadow-soft hover:bg-sea-700;
+  }
+  .btn-secondary {
+    @apply btn bg-white text-sea-900 ring-1 ring-sea-900/10 hover:bg-sand-100;
+  }
+  .btn-ghost {
+    @apply btn text-sea-900 hover:bg-sea-900/5;
+  }
+  .btn-light {
+    @apply btn bg-white text-sea-900 hover:bg-sand-100;
+  }
+  .btn-outline-light {
+    @apply btn text-white ring-1 ring-white/50 hover:bg-white/10;
+  }
+
+  .card {
+    @apply rounded-2xl bg-white shadow-soft ring-1 ring-sea-900/5;
+  }
+
+  .prose-site {
+    @apply text-pebble-800 text-[1.0625rem] leading-relaxed;
+  }
+  .prose-site p + p {
+    @apply mt-4;
+  }
+  .prose-site a {
+    @apply text-sea-700 underline decoration-sea-300 underline-offset-[3px] hover:decoration-sea-600;
+  }
+  .prose-site h2 {
+    @apply mt-10 mb-3 text-2xl;
+  }
+  .prose-site h3 {
+    @apply mt-8 mb-2 text-xl;
+  }
+  .prose-site ul {
+    @apply mt-3 list-disc space-y-1.5 pl-6;
+  }
+
+  .field {
+    @apply w-full rounded-xl border border-pebble-200 bg-white px-4 py-3 text-base text-pebble-800 shadow-none placeholder:text-pebble-400 focus:border-sea-500 focus:outline-none focus:ring-2 focus:ring-sea-200;
+  }
+  .field-label {
+    @apply mb-1.5 block text-sm font-semibold text-sea-900;
+  }
+  .field-error {
+    @apply mt-1.5 text-sm text-red-700;
+  }
+}
+
+/* Decorative wave separator used between hero and content */
+.wave-divider {
+  --wave-color: var(--color-sand-50);
+  position: relative;
+}
+.wave-divider::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 48px;
+  background: var(--wave-color);
+  clip-path: ellipse(60% 100% at 50% 100%);
 }
