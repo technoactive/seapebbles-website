@@ -14,17 +14,18 @@ export function SiteHeader() {
       >
         Skip to content
       </a>
-      <div className="container-site flex h-16 items-center justify-between gap-4 sm:h-20">
+      <div className="container-site flex h-[4.5rem] items-center justify-between gap-4 sm:h-20">
         <Link href="/" className="flex items-center gap-3" aria-label={`${business.name} home`}>
           <Image
             src="/images/logo.png"
             alt=""
-            width={48}
-            height={54}
+            width={80}
+            height={60}
             priority
-            className="h-11 w-auto sm:h-12"
+            className="h-14 w-auto sm:h-[3.75rem]"
           />
-          <span className="hidden flex-col leading-tight whitespace-nowrap sm:flex">
+          {/* The logo already carries the name; the wordmark only earns its space where the inline nav is hidden. */}
+          <span className="hidden flex-col leading-tight whitespace-nowrap sm:flex lg:hidden">
             <span className="font-display text-xl font-semibold text-sea-900">Sea Pebbles</span>
             <span className="text-[11px] font-medium tracking-[0.14em] text-sea-700 uppercase">
               Hatch End · Est. 1990

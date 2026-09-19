@@ -139,8 +139,8 @@ export function logoSchema(): JsonLd {
     "@id": ids.logo,
     url: `${SITE_URL}/images/logo.png`,
     contentUrl: `${SITE_URL}/images/logo.png`,
-    width: 538,
-    height: 600,
+    width: 378,
+    height: 285,
     caption: `${business.name} logo`,
   };
 }

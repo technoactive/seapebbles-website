@@ -46,7 +46,7 @@ export default async function OpenGraphImage() {
           }}
         >
           { }
-          <img src={logoSrc} alt="" width={150} height={167} />
+          <img src={logoSrc} alt="" width={180} height={136} />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div
               style={{

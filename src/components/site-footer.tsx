@@ -12,9 +12,9 @@ export function SiteFooter() {
           <Image
             src="/images/logo-white.png"
             alt="Sea Pebbles, The Plaice to Eat, established 1990"
-            width={120}
-            height={134}
-            className="h-24 w-auto"
+            width={160}
+            height={121}
+            className="h-20 w-auto"
           />
           <p className="max-w-xs text-sm leading-relaxed">
             A family fish restaurant and takeaway on Uxbridge Road, Hatch End. Frying since 1990, still
