@@ -17,11 +17,11 @@ export function OpeningHours({
 }) {
   if (variant === "stacked") {
     return (
-      <dl className={`space-y-4 ${className}`}>
+      <dl className={`divide-y divide-white/10 ${className}`}>
         {openingHoursSummary.map((row) => (
-          <div key={row.days}>
-            <dt className="text-sm font-semibold text-white">{row.days}</dt>
-            <dd className="mt-0.5 text-sm text-white/75">
+          <div key={row.days} className="py-2.5 first:pt-0 last:pb-0">
+            <dt className="text-sm text-white/70">{row.days}</dt>
+            <dd className="mt-0.5 text-sm font-semibold text-white">
               {row.times.map((t, i) => (
                 <span key={t} className="whitespace-nowrap tabular-nums">
                   {i > 0 && <span className="mx-1.5 text-white/40" aria-hidden>·</span>}
@@ -35,28 +35,40 @@ export function OpeningHours({
     );
   }
 
-  // Phones: day above its times. From `sm` up: day left, times right-aligned.
+  // Hairline-divided rows. Day label is quiet, times are the strong element.
+  // Phones: day above its times (periods joined with a dot). From `sm` up:
+  // day left, one period per line right-aligned.
   return (
-    <dl
-      className={`grid grid-cols-1 gap-y-3.5 sm:grid-cols-[auto_1fr] sm:gap-x-6 sm:gap-y-3 ${className}`}
-    >
-      {openingHoursSummary.map((row) => (
-        <div key={row.days} className="sm:contents">
-          <dt className="font-semibold text-sea-900 sm:whitespace-nowrap">{row.days}</dt>
-          <dd className="mt-0.5 tabular-nums sm:mt-0 sm:text-right">
-            {row.times.map((t, i) => (
-              <span key={t} className="whitespace-nowrap sm:block">
-                {i > 0 && (
-                  <span className="mx-1.5 text-pebble-400 sm:hidden" aria-hidden>
-                    ·
-                  </span>
-                )}
-                {t}
-              </span>
-            ))}
-          </dd>
-        </div>
-      ))}
+    <dl className={`divide-y divide-sea-900/8 ${className}`}>
+      {openingHoursSummary.map((row) => {
+        const closed = row.times.length === 1 && row.times[0] === "Closed";
+        return (
+          <div
+            key={row.days}
+            className="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
+          >
+            <dt className="text-sm leading-6 font-medium text-pebble-600 sm:whitespace-nowrap">
+              {row.days}
+            </dt>
+            <dd
+              className={`text-sm leading-6 tabular-nums sm:text-right ${
+                closed ? "font-medium text-pebble-400" : "font-semibold text-sea-900"
+              }`}
+            >
+              {row.times.map((t, i) => (
+                <span key={t} className="whitespace-nowrap sm:block">
+                  {i > 0 && (
+                    <span className="mx-1.5 font-normal text-pebble-400 sm:hidden" aria-hidden>
+                      ·
+                    </span>
+                  )}
+                  {t}
+                </span>
+              ))}
+            </dd>
+          </div>
+        );
+      })}
     </dl>
   );
 }
