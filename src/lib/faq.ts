@@ -31,7 +31,7 @@ export const faqs: FaqItem[] = [
   {
     question: "Can I order takeaway or delivery?",
     answer:
-      "Yes. You can collect from the shop, order directly through our own online ordering system or the Sea Pebbles app, or have food delivered via Uber Eats or Deliveroo.",
+      "Yes. You can collect from the shop, order directly through our own online ordering system or the Sea Pebbles app, or have food delivered via Deliveroo.",
   },
   {
     question: "Do you have vegetarian, vegan or gluten-free options?",

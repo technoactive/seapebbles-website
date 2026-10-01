@@ -79,7 +79,6 @@ export const business = {
   },
   ordering: {
     direct: "https://orderdirectly.biz/menu/661",
-    uberEats: "https://www.ubereats.com/store/sea-pebbles-hatch-end/s0XX2R8LTQ-VE4zHLGAz1g",
     deliveroo: "https://deliveroo.co.uk/menu/london/pinner/sea-pebbles?day=today&postcode=HA54HR&time=ASAP",
     iosApp: "https://apps.apple.com/gb/app/sea-pebbles-hatch-end/id1517633414",
   },

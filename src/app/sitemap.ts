@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 
 // Bumped when content changes so crawlers see an honest lastmod.
-const CONTENT_UPDATED = new Date("2026-09-19T00:00:00Z");
+const CONTENT_UPDATED = new Date("2026-10-01T00:00:00Z");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }[] = [

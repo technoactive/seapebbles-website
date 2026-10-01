@@ -69,6 +69,11 @@ const nextConfig: NextConfig = {
     // Old WordPress URLs that may still be indexed or linked.
     return [
       { source: "/faq", destination: "/faqs", permanent: true },
+      // Sitemaps Search Console was already fetching from the WordPress site.
+      { source: "/sitemap.txt", destination: "/sitemap.xml", permanent: true },
+      { source: "/sitemap_index.xml", destination: "/sitemap.xml", permanent: true },
+      { source: "/wp-sitemap.xml", destination: "/sitemap.xml", permanent: true },
+      { source: "/page-sitemap.xml", destination: "/sitemap.xml", permanent: true },
       { source: "/menus/Sea%20Pebbles%20Main%20Menu%202026.pdf", destination: "/menus/sea-pebbles-main-menu-2026.pdf", permanent: true },
       { source: "/menus/Sea%20Pebbles%20Lunch%20Deal%20%26%20Desserts%202026.pdf", destination: "/menus/sea-pebbles-lunch-deal-and-desserts-2026.pdf", permanent: true },
       { source: "/menus/Sea%20Pebbles%20All%20Menus%202026.pdf", destination: "/menu", permanent: true },

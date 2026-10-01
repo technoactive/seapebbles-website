@@ -248,13 +248,9 @@ export default function HomePage() {
           <div className="card p-7">
             <h3 className="text-xl">Get it delivered</h3>
             <p className="mt-3 text-sm text-pebble-600">
-              We are on Uber Eats and Deliveroo across Hatch End, Pinner, Harrow and the surrounding
-              postcodes.
+              We deliver through Deliveroo across Hatch End, Pinner and the surrounding postcodes.
             </p>
             <div className="mt-3 flex flex-wrap gap-x-5">
-              <a href={business.ordering.uberEats} target="_blank" rel="noopener" className="link-arrow">
-                Uber Eats <ExternalIcon className="h-4 w-4" />
-              </a>
               <a href={business.ordering.deliveroo} target="_blank" rel="noopener" className="link-arrow">
                 Deliveroo <ExternalIcon className="h-4 w-4" />
               </a>

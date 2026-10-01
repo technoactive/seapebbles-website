@@ -62,7 +62,7 @@ export default function PrivacyPolicyPage() {
         </p>
         <p>
           Online ordering and delivery are handled by third parties (our direct ordering provider,
-          Uber Eats, Deliveroo and the App Store). When you order through them, their privacy policies
+          Deliveroo and the App Store). When you order through them, their privacy policies
           apply to the information you give them.
         </p>
 

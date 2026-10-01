@@ -19,7 +19,7 @@ import { pageMetadata } from "@/lib/seo";
 import { business } from "@/lib/site";
 
 const description =
-  "Order fish and chips from Sea Pebbles, Hatch End, for collection or delivery. Order direct through our website or app, or via Uber Eats and Deliveroo across Pinner and Harrow.";
+  "Order fish and chips from Sea Pebbles, Hatch End, for collection or delivery. Order direct through our website or app, or via Deliveroo across Pinner and Harrow.";
 
 export const metadata: Metadata = pageMetadata({
   title: "Order Online: Collection & Delivery in Hatch End, Pinner and Harrow",
@@ -35,11 +35,6 @@ const directBenefits = [
 ];
 
 const deliveryApps = [
-  {
-    name: "Uber Eats",
-    area: "Hatch End, Pinner, Harrow and nearby postcodes",
-    href: business.ordering.uberEats,
-  },
   {
     name: "Deliveroo",
     area: "Hatch End, Pinner and the surrounding area",
@@ -65,7 +60,7 @@ const steps = [
 const goodToKnow = [
   "Fish can be battered, in matzo meal, or grilled on takeaway orders too.",
   "Tell us about allergies when you order, whichever way you order.",
-  "Delivery areas and fees are set by Uber Eats and Deliveroo, not by us.",
+  "Delivery areas and fees are set by Deliveroo, not by us.",
   "Bank holiday hours may differ; check Instagram or Google before you order.",
 ];
 
@@ -188,8 +183,8 @@ export default function OrderPage() {
             </div>
             <h3 className="mt-5 text-2xl sm:text-3xl">Get it delivered</h3>
             <p className="mt-3 text-pebble-600">
-              We&rsquo;re on both of the big apps. Delivery areas and fees are set by them, and you
-              can track the rider in the app.
+              We deliver through Deliveroo. The delivery area and fee are set by them, and you can
+              track the rider in their app.
             </p>
             <ul className="mt-6 flex-1 space-y-3">
               {deliveryApps.map((app) => (

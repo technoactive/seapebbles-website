@@ -31,7 +31,7 @@ Bank holiday hours may differ.
 - Price range: ${business.priceRange}. Fish main courses from £20.95; two-course lunch deal £${lunchDeal.price.toFixed(2)}
 - Fish can be fried in batter, fried in egg and matzo meal, or grilled
 - Vegetarian section, kids menu (juice and ice cream included), licensed bar
-- Dine in, takeaway collection, delivery via Uber Eats and Deliveroo, direct online ordering and iPhone app
+- Dine in, takeaway collection, delivery via Deliveroo, direct online ordering and iPhone app
 - Reservations: ${SITE_URL}/reserve or ${business.phone}
 - Food Hygiene Rating 5
 
@@ -114,7 +114,6 @@ ${business.awards.map((a) => `- ${a}`).join("\n")}
 - Facebook: ${business.social.facebook}
 - Tripadvisor: ${business.tripadvisorUrl}
 - Order direct: ${business.ordering.direct}
-- Uber Eats: ${business.ordering.uberEats}
 - Deliveroo: ${business.ordering.deliveroo}
 - iPhone app: ${business.ordering.iosApp}
 `;

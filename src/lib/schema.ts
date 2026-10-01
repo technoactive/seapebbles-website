@@ -71,7 +71,6 @@ export function restaurantSchema(): JsonLd {
       business.social.facebook,
       business.social.instagram,
       business.tripadvisorUrl,
-      business.ordering.uberEats,
       business.ordering.deliveroo,
     ],
     potentialAction: [
