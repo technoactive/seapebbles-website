@@ -21,7 +21,9 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       // React needs eval() for dev-mode debugging only; never shipped to production.
-      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+      // Vercel Analytics / Speed Insights load from /_vercel/* (same origin) in
+      // production; only their debug builds in development come from a CDN.
+      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval' https://va.vercel-scripts.com" : ""}`,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://maps.gstatic.com https://*.googleapis.com https://*.ggpht.com",
       "font-src 'self' data:",
