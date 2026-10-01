@@ -143,6 +143,27 @@ export function FacebookIcon(props: IconProps) {
   );
 }
 
+export function BagIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      {props.title && <title>{props.title}</title>}
+      <path d="M5 8h14l-1 12H6L5 8Z" />
+      <path d="M9 8V6a3 3 0 0 1 6 0v2" />
+    </svg>
+  );
+}
+
+export function BikeIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      {props.title && <title>{props.title}</title>}
+      <circle cx="5.5" cy="17" r="3" />
+      <circle cx="18.5" cy="17" r="3" />
+      <path d="M5.5 17 9 9h4l3 8M9 9h5.5l1.5-3h2" />
+    </svg>
+  );
+}
+
 export function CheckIcon(props: IconProps) {
   return (
     <svg {...base(props)}>

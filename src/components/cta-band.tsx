@@ -5,9 +5,12 @@ import { business } from "@/lib/site";
 export function CtaBand({
   title = "Hungry? We'll see you soon.",
   text = "Book a table for dinner, or order online for collection or delivery.",
+  showOrder = true,
 }: {
   title?: string;
   text?: string;
+  /** Hide the "Order online" button, e.g. on the order page itself. */
+  showOrder?: boolean;
 }) {
   return (
     <section className="container-site">
@@ -25,9 +28,11 @@ export function CtaBand({
             <Link href="/reserve" className="btn-light">
               Book a table
             </Link>
-            <Link href="/order" className="btn-outline-light">
-              Order online
-            </Link>
+            {showOrder && (
+              <Link href="/order" className="btn-outline-light">
+                Order online
+              </Link>
+            )}
             <a href={`tel:${business.phoneIntl}`} className="btn-outline-light">
               <PhoneIcon className="h-4 w-4" /> {business.phone}
             </a>
