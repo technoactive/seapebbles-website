@@ -27,9 +27,9 @@ export function Testimonials() {
       <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {testimonials.map((t) => (
           <li key={t.author + t.date} className="card flex flex-col p-6">
-            <div className="flex gap-0.5 text-batter-500" aria-label="Five star review">
+            <div role="img" aria-label="Five star review" className="flex gap-0.5 text-batter-500">
               {Array.from({ length: 5 }).map((_, i) => (
-                <StarIcon key={i} className="h-4 w-4" />
+                <StarIcon key={i} className="h-4 w-4" aria-hidden="true" />
               ))}
             </div>
             <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-pebble-800">
