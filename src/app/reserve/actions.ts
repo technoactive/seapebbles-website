@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { formatTime12h } from "@/lib/hours";
-import { RESERVATIONS_TO, makeReference, renderEmail, sendMail } from "@/lib/mail";
+import { RESERVATIONS_TO, fromMailbox, makeReference, renderEmail, sendMail } from "@/lib/mail";
 import {
   validateReservation,
   type ReservationFields,
@@ -131,7 +131,7 @@ export async function submitReservation(
   // restaurant, so a failure here should not show the guest an error.
   await sendMail({
     to: values.email,
-    replyTo: RESERVATIONS_TO,
+    from: fromMailbox(RESERVATIONS_TO),
     subject: `We've received your table request (${ref})`,
     ...toGuest,
     tags: { form: "reservation", kind: "guest" },

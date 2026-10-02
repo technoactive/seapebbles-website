@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { topicLabel, validateContact, type ContactFields, type ContactState } from "@/lib/contact";
-import { CONTACT_TO, makeReference, renderEmail, sendMail } from "@/lib/mail";
+import { CONTACT_TO, fromMailbox, makeReference, renderEmail, sendMail } from "@/lib/mail";
 import { SITE_URL, business } from "@/lib/site";
 
 function str(formData: FormData, key: string) {
@@ -87,7 +87,7 @@ export async function submitContact(_prev: ContactState, formData: FormData): Pr
 
   await sendMail({
     to: values.email,
-    replyTo: CONTACT_TO,
+    from: fromMailbox(CONTACT_TO),
     subject: `We've received your message (${ref})`,
     ...senderEmail(values, ref),
     tags: { form: "contact", kind: "sender" },

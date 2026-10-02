@@ -5,18 +5,29 @@ import { SITE_URL, business, formatAddress } from "@/lib/site";
 /**
  * Outbound email for the website forms, sent through Resend's HTTP API.
  *
- * Everything leaves from one verified sender (website@seapebbles.co.uk) so
- * DKIM/SPF line up. Replies are steered with `reply_to`: the restaurant
- * replies straight to the guest, and the guest's auto-acknowledgement replies
- * to the relevant restaurant mailbox.
+ * Two kinds of sender, both on the verified domain so DKIM/SPF line up:
+ *
+ * - Notifications *to the restaurant* come from website@seapebbles.co.uk,
+ *   a send-only address with no inbox, with `reply_to` set to the guest so
+ *   staff can just hit Reply.
+ * - Acknowledgements *to the guest* come from the real mailbox that will
+ *   handle them (reservations@ or info@), so a reply lands in that inbox.
  */
 
+/** Send-only address used for notifications to the restaurant. */
 export const MAIL_FROM = process.env.MAIL_FROM ?? `${business.name} <website@seapebbles.co.uk>`;
 export const RESERVATIONS_TO = process.env.RESERVATIONS_TO_EMAIL ?? "reservations@seapebbles.co.uk";
 export const CONTACT_TO = process.env.CONTACT_TO_EMAIL ?? business.email;
 
+/** "Sea Pebbles <mailbox>" for guest-facing mail, from a monitored mailbox. */
+export function fromMailbox(address: string) {
+  return `${business.name} <${address}>`;
+}
+
 export type Mail = {
   to: string | string[];
+  /** Defaults to the send-only website address. */
+  from?: string;
   subject: string;
   html: string;
   text: string;
@@ -44,7 +55,7 @@ export async function sendMail(mail: Mail): Promise<SendResult> {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        from: MAIL_FROM,
+        from: mail.from ?? MAIL_FROM,
         to: Array.isArray(mail.to) ? mail.to : [mail.to],
         reply_to: mail.replyTo,
         subject: mail.subject,
