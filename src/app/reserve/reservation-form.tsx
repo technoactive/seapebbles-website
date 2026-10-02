@@ -1,24 +1,57 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
-import { MAX_PARTY_ONLINE, type ReservationState } from "@/lib/reservation";
+import { useActionState, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { formatTime12h, weekdayOf } from "@/lib/hours";
+import {
+  MAX_PARTY_ONLINE,
+  bookingTimeSlots,
+  todayInLondon,
+  type ReservationState,
+} from "@/lib/reservation";
+import { openingHours } from "@/lib/site";
 import { submitReservation } from "./actions";
 
 const initialState: ReservationState = { status: "idle" };
+
+const subscribeNoop = () => () => {};
+
+const partySizes = Array.from({ length: MAX_PARTY_ONLINE }, (_, i) => i + 1);
 
 export function ReservationForm() {
   const [state, formAction, pending] = useActionState(submitReservation, initialState);
   const statusRef = useRef<HTMLDivElement>(null);
 
+  const v = state.values ?? {};
+  const e = state.errors ?? {};
+
+  // The page is prerendered, so "today" has to be worked out in the browser.
+  const minDate = useSyncExternalStore(
+    subscribeNoop,
+    () => todayInLondon(),
+    () => undefined,
+  );
+
+  // Controlled so the time picker can follow the chosen day; the value
+  // survives a failed submit because the component is not remounted.
+  const [date, setDate] = useState(v.date ?? "");
+
   useEffect(() => {
     if (state.status !== "idle") statusRef.current?.focus();
   }, [state]);
 
-  const v = state.values ?? {};
-  const e = state.errors ?? {};
+  const day = /^\d{4}-\d{2}-\d{2}$/.test(date) ? weekdayOf(date) : null;
+  const closedDay = day !== null && openingHours[day].length === 0;
+  const slotGroups = useMemo(() => bookingTimeSlots(closedDay ? null : day), [day, closedDay]);
 
   return (
-    <form action={formAction} noValidate className="card p-6 sm:p-8">
+    <form action={formAction} noValidate className="card p-5 sm:p-8">
+      <div className="mb-6">
+        <h2 className="text-2xl">Request a table</h2>
+        <p className="mt-1.5 text-sm text-pebble-600">
+          Takes under a minute. We confirm by phone or email.
+        </p>
+      </div>
+
       {state.status === "error" && state.message && (
         <div
           ref={statusRef}
@@ -40,6 +73,7 @@ export function ReservationForm() {
             name="name"
             type="text"
             autoComplete="name"
+            autoCapitalize="words"
             required
             defaultValue={v.name}
             aria-invalid={Boolean(e.name)}
@@ -57,25 +91,27 @@ export function ReservationForm() {
           <label htmlFor="people" className="field-label">
             Number of people
           </label>
-          <input
+          <select
             id="people"
             name="people"
-            type="number"
-            inputMode="numeric"
-            min={1}
-            max={MAX_PARTY_ONLINE}
             required
             defaultValue={v.people ?? "2"}
             aria-invalid={Boolean(e.people)}
             aria-describedby={e.people ? "people-error" : "people-hint"}
-            className="field"
-          />
+            className="field field-select"
+          >
+            {partySizes.map((n) => (
+              <option key={n} value={n}>
+                {n} {n === 1 ? "person" : "people"}
+              </option>
+            ))}
+          </select>
           {e.people ? (
             <p id="people-error" className="field-error">
               {e.people}
             </p>
           ) : (
-            <p id="people-hint" className="mt-1.5 text-xs text-pebble-600">
+            <p id="people-hint" className="field-hint">
               Groups over {MAX_PARTY_ONLINE}? Please call us.
             </p>
           )}
@@ -90,18 +126,24 @@ export function ReservationForm() {
             name="date"
             type="date"
             required
-            defaultValue={v.date}
-            aria-invalid={Boolean(e.date)}
+            min={minDate}
+            value={date}
+            onChange={(event) => setDate(event.target.value)}
+            aria-invalid={Boolean(e.date) || closedDay}
             aria-describedby={e.date ? "date-error" : "date-hint"}
-            className="field"
+            className="field field-date"
           />
           {e.date ? (
             <p id="date-error" className="field-error">
               {e.date}
             </p>
+          ) : closedDay ? (
+            <p id="date-hint" className="field-error">
+              We&rsquo;re closed on {day}s. We&rsquo;re open Tuesday to Saturday.
+            </p>
           ) : (
-            <p id="date-hint" className="mt-1.5 text-xs text-pebble-600">
-              We&rsquo;re open Tuesday to Saturday.
+            <p id="date-hint" className="field-hint">
+              {day ? `${day}: ${describeDay(day)}.` : "We\u2019re open Tuesday to Saturday."}
             </p>
           )}
         </div>
@@ -110,26 +152,33 @@ export function ReservationForm() {
           <label htmlFor="time" className="field-label">
             Time
           </label>
-          <input
+          <select
             id="time"
             name="time"
-            type="time"
-            step={900}
-            min="11:30"
-            max="21:30"
             required
-            defaultValue={v.time}
+            defaultValue={v.time ?? ""}
             aria-invalid={Boolean(e.time)}
             aria-describedby={e.time ? "time-error" : "time-hint"}
-            className="field"
-          />
+            className="field field-select"
+          >
+            <option value="">Choose a time</option>
+            {slotGroups.map((group) => (
+              <optgroup key={group.label} label={group.label}>
+                {group.slots.map((slot) => (
+                  <option key={slot.value} value={slot.value}>
+                    {slot.label}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
           {e.time ? (
             <p id="time-error" className="field-error">
               {e.time}
             </p>
           ) : (
-            <p id="time-hint" className="mt-1.5 text-xs text-pebble-600">
-              Tue to Thu: 11:30 to 14:30 and 17:00 to 22:00. Fri and Sat: 11:30 to 22:00.
+            <p id="time-hint" className="field-hint">
+              Last bookings 30 minutes before closing.
             </p>
           )}
         </div>
@@ -143,6 +192,7 @@ export function ReservationForm() {
             name="phone"
             type="tel"
             autoComplete="tel"
+            inputMode="tel"
             required
             defaultValue={v.phone}
             aria-invalid={Boolean(e.phone)}
@@ -165,6 +215,9 @@ export function ReservationForm() {
             name="email"
             type="email"
             autoComplete="email"
+            inputMode="email"
+            autoCapitalize="none"
+            spellCheck={false}
             required
             defaultValue={v.email}
             aria-invalid={Boolean(e.email)}
@@ -207,7 +260,7 @@ export function ReservationForm() {
         </div>
       </div>
 
-      <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-8 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs leading-relaxed text-pebble-600">
           We only use these details to manage your booking. See our{" "}
           <a href="/privacy-policy" className="underline underline-offset-2">
@@ -215,10 +268,20 @@ export function ReservationForm() {
           </a>
           .
         </p>
-        <button type="submit" disabled={pending} className="btn-primary disabled:opacity-60">
+        <button
+          type="submit"
+          disabled={pending}
+          className="btn-primary w-full disabled:opacity-60 sm:w-auto"
+        >
           {pending ? "Sending…" : "Request a table"}
         </button>
       </div>
     </form>
   );
+}
+
+function describeDay(day: keyof typeof openingHours) {
+  return openingHours[day]
+    .map((p) => `${formatTime12h(p.opens)} to ${formatTime12h(p.closes)}`)
+    .join(" and ");
 }

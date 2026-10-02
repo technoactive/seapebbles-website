@@ -1,5 +1,5 @@
-import { isWithinOpeningHours, weekdayOf } from "@/lib/hours";
-import { business, openingHours } from "@/lib/site";
+import { formatTime12h, isWithinOpeningHours, toMinutes, weekdayOf } from "@/lib/hours";
+import { business, openingHours, type DayOfWeek } from "@/lib/site";
 
 export type ReservationFields = {
   name: string;
@@ -19,6 +19,37 @@ export type ReservationState = {
 };
 
 export const MAX_PARTY_ONLINE = 12;
+
+export type TimeSlot = { value: string; label: string };
+export type TimeSlotGroup = { label: string; slots: TimeSlot[] };
+
+/**
+ * Bookable 15-minute slots for the time picker, grouped by service. Pass the
+ * chosen weekday to drop slots that day doesn't serve (e.g. the afternoon on
+ * Tuesday to Thursday); pass `null` for every slot the restaurant ever offers.
+ * Last bookings are 30 minutes before closing, matching `isWithinOpeningHours`.
+ */
+export function bookingTimeSlots(day: DayOfWeek | null): TimeSlotGroup[] {
+  const allowed = (hhmm: string) =>
+    day === null
+      ? (Object.keys(openingHours) as DayOfWeek[]).some((d) => isWithinOpeningHours(d, hhmm))
+      : isWithinOpeningHours(day, hhmm);
+
+  const range = (from: string, to: string): TimeSlot[] => {
+    const slots: TimeSlot[] = [];
+    for (let m = toMinutes(from); m <= toMinutes(to); m += 15) {
+      const value = `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+      if (allowed(value)) slots.push({ value, label: formatTime12h(value) });
+    }
+    return slots;
+  };
+
+  return [
+    { label: "Lunch", slots: range("11:30", "14:00") },
+    { label: day === null ? "Afternoon (Friday and Saturday)" : "Afternoon", slots: range("14:15", "16:45") },
+    { label: "Evening", slots: range("17:00", "21:30") },
+  ].filter((group) => group.slots.length > 0);
+}
 
 export function todayInLondon(now = new Date()) {
   return new Intl.DateTimeFormat("en-CA", {

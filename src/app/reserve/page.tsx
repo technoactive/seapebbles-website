@@ -34,13 +34,20 @@ export default function ReservePage() {
         title="Book a table"
         intro="Fill in the form and we'll confirm by phone or email. If it's for tonight, ringing us is quicker."
         crumbs={[{ name: "Reservations", path: "/reserve" }]}
+        compact
       >
-        <a href={`tel:${business.phoneIntl}`} className="btn-light mt-6">
+        <p className="mt-3 text-sm text-white/80 sm:hidden">
+          For tonight?{" "}
+          <a href={`tel:${business.phoneIntl}`} className="font-semibold text-white underline underline-offset-2">
+            Call {business.phone}
+          </a>
+        </p>
+        <a href={`tel:${business.phoneIntl}`} className="btn-light mt-6 hidden sm:inline-flex">
           <PhoneIcon className="h-4 w-4" /> Call {business.phone}
         </a>
       </PageHero>
 
-      <section className="container-site grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)]">
+      <section className="container-site relative z-10 -mt-16 grid gap-6 sm:-mt-20 sm:gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)]">
         <ReservationForm />
 
         <aside className="space-y-6">

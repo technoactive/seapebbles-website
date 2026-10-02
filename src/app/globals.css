@@ -144,11 +144,48 @@
     @apply mt-3 list-disc space-y-1.5 pl-6;
   }
 
+  /*
+   * Form controls. `appearance-none` + `min-w-0` + `block` are what stop iOS
+   * Safari's date/time inputs from overflowing their grid cell, and 16px text
+   * stops iOS zooming into the field on focus.
+   */
   .field {
-    @apply w-full rounded-xl border border-pebble-200 bg-white px-4 py-3 text-base text-pebble-800 shadow-none placeholder:text-pebble-400 focus:border-sea-500 focus:outline-none focus:ring-2 focus:ring-sea-200;
+    @apply block min-h-12 w-full min-w-0 appearance-none rounded-xl border border-pebble-200 bg-white px-4 py-3 text-base leading-6 text-pebble-800 shadow-none placeholder:text-pebble-400 focus:border-sea-500 focus:outline-none focus:ring-2 focus:ring-sea-200;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .field[aria-invalid="true"] {
+    @apply border-red-300 bg-red-50/40 focus:border-red-400 focus:ring-red-100;
+  }
+  textarea.field {
+    @apply min-h-0;
+  }
+  .field-select,
+  .field-date {
+    @apply cursor-pointer bg-no-repeat pr-12;
+    background-position: right 1rem center;
+    background-size: 1.25rem 1.25rem;
+  }
+  .field-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%230f5378' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.75' d='m5.5 7.5 4.5 4.5 4.5-4.5'/%3E%3C/svg%3E");
+  }
+  .field-date {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Crect width='14' height='13' x='3' y='4' stroke='%230f5378' stroke-width='1.5' rx='2'/%3E%3Cpath stroke='%230f5378' stroke-linecap='round' stroke-width='1.5' d='M3 8.5h14M7 2.5v3M13 2.5v3'/%3E%3C/svg%3E");
+  }
+  /* iOS/WebKit paints date values centred inside a shrunken box; make it behave like text. */
+  .field-date::-webkit-date-and-time-value {
+    @apply min-h-6 text-left;
+  }
+  .field-date::-webkit-calendar-picker-indicator {
+    @apply absolute inset-0 h-full w-full cursor-pointer opacity-0;
+  }
+  .field-date {
+    @apply relative;
   }
   .field-label {
     @apply mb-1.5 block text-sm font-semibold text-sea-900;
+  }
+  .field-hint {
+    @apply mt-1.5 text-xs leading-5 text-pebble-600;
   }
   .field-error {
     @apply mt-1.5 text-sm text-red-700;

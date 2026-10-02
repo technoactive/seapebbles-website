@@ -18,7 +18,7 @@ export function ContactForm() {
   const e = state.errors ?? {};
 
   return (
-    <form action={formAction} noValidate className="card p-6 sm:p-8">
+    <form action={formAction} noValidate className="card p-5 sm:p-8">
       <h2 className="text-2xl">Send us a message</h2>
       <p className="mt-2 text-sm text-pebble-600">
         We reply within a day or so. For a table today, please phone instead.
@@ -67,6 +67,9 @@ export function ContactForm() {
             name="email"
             type="email"
             autoComplete="email"
+            inputMode="email"
+            autoCapitalize="none"
+            spellCheck={false}
             required
             defaultValue={v.email}
             aria-invalid={Boolean(e.email)}
@@ -89,6 +92,7 @@ export function ContactForm() {
             name="phone"
             type="tel"
             autoComplete="tel"
+            inputMode="tel"
             defaultValue={v.phone}
             aria-invalid={Boolean(e.phone)}
             aria-describedby={e.phone ? "c-phone-error" : undefined}
@@ -112,7 +116,7 @@ export function ContactForm() {
             defaultValue={v.topic ?? "general"}
             aria-invalid={Boolean(e.topic)}
             aria-describedby={e.topic ? "c-topic-error" : undefined}
-            className="field"
+            className="field field-select"
           >
             {contactTopics.map((t) => (
               <option key={t.value} value={t.value}>
@@ -157,7 +161,7 @@ export function ContactForm() {
         </div>
       </div>
 
-      <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-8 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs leading-relaxed text-pebble-600">
           We only use these details to reply to you. See our{" "}
           <a href="/privacy-policy" className="underline underline-offset-2">
@@ -165,7 +169,11 @@ export function ContactForm() {
           </a>
           .
         </p>
-        <button type="submit" disabled={pending} className="btn-primary disabled:opacity-60">
+        <button
+          type="submit"
+          disabled={pending}
+          className="btn-primary w-full disabled:opacity-60 sm:w-auto"
+        >
           {pending ? "Sending…" : "Send message"}
         </button>
       </div>

@@ -36,9 +36,17 @@ export default function ContactPage() {
         title="Get in touch"
         intro="Phone is quickest during opening hours. For anything that can wait, send us a message below and we reply within a day or so."
         crumbs={[{ name: "Contact", path: "/contact" }]}
-      />
+        compact
+      >
+        <p className="mt-3 text-sm text-white/80 sm:hidden">
+          Quickest:{" "}
+          <a href={`tel:${business.phoneIntl}`} className="font-semibold text-white underline underline-offset-2">
+            call {business.phone}
+          </a>
+        </p>
+      </PageHero>
 
-      <section className="container-site grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+      <section className="container-site relative z-10 -mt-16 grid gap-6 sm:-mt-20 sm:gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
         <div className="space-y-6">
           <div className="card p-7">
             <h2 className="text-2xl">Sea Pebbles</h2>
@@ -129,7 +137,7 @@ export default function ContactPage() {
           </div>
         </div>
 
-        <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+        <div className="order-first space-y-6 lg:order-none lg:sticky lg:top-24 lg:self-start">
           <ContactForm />
         </div>
       </section>
