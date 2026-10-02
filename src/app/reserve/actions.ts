@@ -1,91 +1,90 @@
 "use server";
 
-import { weekdayOf } from "@/lib/hours";
+import { redirect } from "next/navigation";
+import { formatTime12h } from "@/lib/hours";
+import { RESERVATIONS_TO, makeReference, renderEmail, sendMail } from "@/lib/mail";
 import {
   validateReservation,
   type ReservationFields,
   type ReservationState,
 } from "@/lib/reservation";
-import { business } from "@/lib/site";
+import { SITE_URL, business } from "@/lib/site";
 
 function str(formData: FormData, key: string) {
   const v = formData.get(key);
   return typeof v === "string" ? v.trim() : "";
 }
 
-function escapeHtml(s: string) {
-  return s.replace(
-    /[&<>"']/g,
-    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] ?? c,
-  );
+function longDate(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Intl.DateTimeFormat("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Europe/London",
+  }).format(new Date(Date.UTC(y, m - 1, d, 12)));
 }
 
-/**
- * Sends the request to the restaurant. Uses Resend's HTTP API when
- * RESEND_API_KEY is configured; in development without a key it logs instead.
- */
-async function deliver(values: ReservationFields): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.RESERVATIONS_TO_EMAIL ?? business.email;
-  const from =
-    process.env.RESERVATIONS_FROM_EMAIL ?? "Sea Pebbles Website <reservations@seapebbles.co.uk>";
+/** Email to the restaurant: everything they need to confirm the table. */
+function restaurantEmail(v: ReservationFields, ref: string) {
+  const when = `${longDate(v.date)} at ${formatTime12h(v.time)}`;
+  return renderEmail({
+    preheader: `${v.name}, ${v.people} people, ${when}`,
+    eyebrow: "New table request",
+    heading: `${v.people} ${Number(v.people) === 1 ? "person" : "people"}, ${when}`,
+    intro: [`A guest has asked for a table through the website. Please confirm with them by phone or email; the table is not booked until you do.`],
+    rows: [
+      { label: "Reference", value: ref },
+      { label: "Name", value: v.name },
+      { label: "Party size", value: v.people },
+      { label: "Date", value: `${longDate(v.date)}` },
+      { label: "Time", value: formatTime12h(v.time) },
+      { label: "Phone", value: v.phone },
+      { label: "Email", value: v.email },
+    ],
+    quote: v.notes ? { label: "Guest's notes", text: v.notes } : undefined,
+    outro: ["Replying to this email goes straight to the guest."],
+    cta: { label: `Call ${v.name.split(" ")[0]}`, href: `tel:${v.phone.replace(/[^\d+]/g, "")}` },
+    footnote: `Sent by the booking form at ${SITE_URL}/reserve. The guest was told to expect a confirmation from you.`,
+  });
+}
 
-  const summary = [
-    `Name: ${values.name}`,
-    `Party size: ${values.people}`,
-    `Date: ${values.date} (${weekdayOf(values.date)})`,
-    `Time: ${values.time}`,
-    `Email: ${values.email}`,
-    `Phone: ${values.phone}`,
-    values.notes ? `Notes: ${values.notes}` : null,
-  ]
-    .filter(Boolean)
-    .join("\n");
-
-  if (!apiKey) {
-    if (process.env.NODE_ENV !== "production") {
-      console.info(`[reservation] RESEND_API_KEY not set; request logged only:\n${summary}`);
-      return true;
-    }
-    console.error("[reservation] RESEND_API_KEY missing in production; request not delivered.");
-    return false;
-  }
-
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from,
-        to: [to],
-        reply_to: values.email,
-        subject: `Table request: ${values.name}, ${values.people} people, ${values.date} ${values.time}`,
-        text: `New table request from the website.\n\n${summary}\n\nPlease confirm with the guest by phone or email.`,
-        html: `<p>New table request from the website.</p><pre style="font:14px/1.5 ui-monospace,monospace">${escapeHtml(summary)}</pre><p>Please confirm with the guest by phone or email.</p>`,
-      }),
-    });
-
-    if (!res.ok) {
-      console.error("[reservation] Resend responded", res.status, await res.text().catch(() => ""));
-      return false;
-    }
-    return true;
-  } catch (error) {
-    console.error("[reservation] delivery failed", error);
-    return false;
-  }
+/** Acknowledgement to the guest. Clear that it is a request, not a booking. */
+function guestEmail(v: ReservationFields, ref: string) {
+  const firstName = v.name.split(" ")[0];
+  const when = `${longDate(v.date)} at ${formatTime12h(v.time)}`;
+  return renderEmail({
+    preheader: `We've received your request for ${when}. We'll confirm shortly.`,
+    eyebrow: "Table request received",
+    heading: `Thanks ${firstName}, we've got your request`,
+    intro: [
+      `You asked for a table for ${v.people} on ${when}. One of the team will check the diary and confirm by phone or email, usually within a few hours during opening times.`,
+      `Your table isn't booked until you hear back from us.`,
+    ],
+    rows: [
+      { label: "Reference", value: ref },
+      { label: "Party size", value: v.people },
+      { label: "Date", value: longDate(v.date) },
+      { label: "Time", value: formatTime12h(v.time) },
+      { label: "Phone we'll call", value: v.phone },
+    ],
+    quote: v.notes ? { label: "Your notes", text: v.notes } : undefined,
+    outro: [
+      `Need to change anything, or is it for tonight? Ringing us on ${business.phone} is quickest. You can also just reply to this email.`,
+    ],
+    cta: { label: "See the menu", href: `${SITE_URL}/menu` },
+    footnote: `We only use these details to manage your booking. ${SITE_URL}/privacy-policy`,
+  });
 }
 
 export async function submitReservation(
   _prev: ReservationState,
   formData: FormData,
 ): Promise<ReservationState> {
-  // Honeypot: real browsers leave this empty.
+  // Honeypot: real browsers leave this empty. Pretend it worked.
   if (str(formData, "website")) {
-    return { status: "success", message: "Thanks, we have your request." };
+    redirect("/reserve/thank-you");
   }
 
   const values: ReservationFields = {
@@ -108,8 +107,19 @@ export async function submitReservation(
     };
   }
 
-  const delivered = await deliver(values);
-  if (!delivered) {
+  const ref = makeReference("SP");
+  const toRestaurant = restaurantEmail(values, ref);
+  const toGuest = guestEmail(values, ref);
+
+  const delivered = await sendMail({
+    to: RESERVATIONS_TO,
+    replyTo: values.email,
+    subject: `Table request ${ref}: ${values.name}, ${values.people} people, ${values.date} ${values.time}`,
+    ...toRestaurant,
+    tags: { form: "reservation", kind: "restaurant" },
+  });
+
+  if (!delivered.ok) {
     return {
       status: "error",
       message: `Sorry, we couldn't send your request just now. Please call us on ${business.phone} and we'll sort it over the phone.`,
@@ -117,9 +127,22 @@ export async function submitReservation(
     };
   }
 
-  const firstName = values.name.split(" ")[0];
-  return {
-    status: "success",
-    message: `Thanks ${firstName}, we've received your request for ${values.people} on ${values.date} at ${values.time}. We'll confirm by phone or email shortly. Your table isn't booked until you hear from us.`,
-  };
+  // The guest's copy is best-effort: the request has already reached the
+  // restaurant, so a failure here should not show the guest an error.
+  await sendMail({
+    to: values.email,
+    replyTo: RESERVATIONS_TO,
+    subject: `We've received your table request (${ref})`,
+    ...toGuest,
+    tags: { form: "reservation", kind: "guest" },
+  });
+
+  const params = new URLSearchParams({
+    ref,
+    name: values.name.split(" ")[0],
+    people: values.people,
+    date: values.date,
+    time: values.time,
+  });
+  redirect(`/reserve/thank-you?${params.toString()}`);
 }

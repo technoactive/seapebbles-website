@@ -1,9 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import { CheckIcon } from "@/components/icons";
 import { MAX_PARTY_ONLINE, type ReservationState } from "@/lib/reservation";
-import { business } from "@/lib/site";
 import { submitReservation } from "./actions";
 
 const initialState: ReservationState = { status: "idle" };
@@ -15,26 +13,6 @@ export function ReservationForm() {
   useEffect(() => {
     if (state.status !== "idle") statusRef.current?.focus();
   }, [state]);
-
-  if (state.status === "success") {
-    return (
-      <div
-        ref={statusRef}
-        tabIndex={-1}
-        role="status"
-        className="card p-8 outline-none"
-      >
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-          <CheckIcon className="h-6 w-6" />
-        </div>
-        <h2 className="mt-5 text-2xl">Request received</h2>
-        <p className="mt-3 leading-relaxed text-pebble-800">{state.message}</p>
-        <p className="mt-4 text-sm text-pebble-600">
-          Need to change anything? Call {business.phone}.
-        </p>
-      </div>
-    );
-  }
 
   const v = state.values ?? {};
   const e = state.errors ?? {};

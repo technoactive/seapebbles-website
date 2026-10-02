@@ -56,9 +56,10 @@ export default function PrivacyPolicyPage() {
 
         <h2>Who else sees it</h2>
         <p>
-          Booking requests are delivered to us as email through a transactional email provider that
-          acts as our processor. Nobody else receives your details, and we never sell or share them
-          for marketing.
+          Booking requests and contact-form messages are delivered to us as email through Resend, a
+          transactional email provider based in the EU that acts as our processor, and you receive
+          an automatic copy for your records. Nobody else receives your details, and we never sell or
+          share them for marketing.
         </p>
         <p>
           Online ordering and delivery are handled by third parties (our direct ordering provider,

@@ -33,7 +33,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/_next/", "/api/"],
+        disallow: ["/_next/", "/api/", "/reserve/thank-you", "/contact/thank-you"],
       },
       {
         userAgent: aiCrawlers,

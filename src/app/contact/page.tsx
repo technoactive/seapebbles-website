@@ -7,6 +7,7 @@ import { PageHero } from "@/components/page-hero";
 import { graph, webPageSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 import { business } from "@/lib/site";
+import { ContactForm } from "./contact-form";
 
 const description =
   "Contact Sea Pebbles fish restaurant in Hatch End: 348-352 Uxbridge Road, HA5 4HR. Phone 020 8428 0203, email info@seapebbles.co.uk. Map, directions and opening hours.";
@@ -33,7 +34,7 @@ export default function ContactPage() {
       <PageHero
         eyebrow="Contact"
         title="Get in touch"
-        intro="Phone is quickest during opening hours. For anything that can wait, email works well and we reply within a day or so."
+        intro="Phone is quickest during opening hours. For anything that can wait, send us a message below and we reply within a day or so."
         crumbs={[{ name: "Contact", path: "/contact" }]}
       />
 
@@ -106,9 +107,6 @@ export default function ContactPage() {
               </a>
             </div>
           </div>
-        </div>
-
-        <div className="space-y-6">
           <div className="overflow-hidden rounded-3xl shadow-soft ring-1 ring-sea-900/5">
             <iframe
               title="Map showing Sea Pebbles on Uxbridge Road, Hatch End"
@@ -118,7 +116,7 @@ export default function ContactPage() {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               allowFullScreen
-              className="block h-[420px] w-full border-0 sm:h-[520px]"
+              className="block h-[360px] w-full border-0"
             />
           </div>
           <div className="prose-site text-sm">
@@ -129,6 +127,10 @@ export default function ContactPage() {
               Uxbridge Road, and there is local parking nearby.
             </p>
           </div>
+        </div>
+
+        <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+          <ContactForm />
         </div>
       </section>
     </>
